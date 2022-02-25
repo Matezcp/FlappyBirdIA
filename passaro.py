@@ -47,7 +47,7 @@ class Passaro:
             if self.angulo < self.ROTACAO_MAXIMA:
                 self.angulo = self.ROTACAO_MAXIMA
         else:
-            if self.angulo < 90:
+            if self.angulo > -90:
                 self.angulo -= self.VELOCIDADE_ROTACAO
     
     def desenhar(self,tela):

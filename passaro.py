@@ -22,10 +22,51 @@ class Passaro:
         self.altura = self.y
         self.tempo = 0
         self.contagem_imagem = 0
-        self.img = IMGS[0]
+        self.img = self.IMGS[0]
 
     def pular(self):
         self.velocidade = -10.5
         self.tempo = 0
         self.altura = self.y
 
+    def mover(self):
+        #Calcula o deslocamento
+        self.tempo += 1
+        deslocamento = (1.5 * (self.tempo**2))/2 + self.velocidade * self.tempo
+
+        #Restringe o deslocamento
+        if deslocamento > 16:
+            deslocamento = 16
+        
+        #Atualiza a posição y e o angulo do passaro
+        self.y += deslocamento
+
+        if deslocamento < 0:
+            if self.angulo < self.ROTACAO_MAXIMA:
+                self.angulo = self.ROTACAO_MAXIMA
+        else:
+            if self.angulo < 90:
+                self.angulo -= self.VELOCIDADE_ROTACAO
+    
+    def desenhar(self,tela):
+        self.contagem_imagem += 1
+
+        #Animação do bater de asas (ordem das imagens)
+        if self.TEMPO_ANIMACAO <= 15:
+            self.img = self.IMGS[(self.TEMPO_ANIMACAO/5)%3]
+        else:
+            self.img = self.IMGS[(self.TEMPO_ANIMACAO/5)%2]
+
+        #Se tiver caindo não faz animação de bater asas
+        if self.angulo <= -80:
+            self.img = self.IMGS[1]
+            self.contagem_imagem = self.TEMPO_ANIMACAO*2
+
+        #Desenha a imagem
+        img_rotacionada = pygame.transform.rotate(self.img, self.angulo)
+        pos_centro_imagem = self.img.get_rect(topleft=(self.x,self.y)).center
+        retangulo = img_rotacionada.get_rect(center=pos_centro_imagem)
+        tela.blit(img_rotacionada,retangulo.topleft)
+
+    def get_mask(self):
+        pygame.mask.from_surface(self.img)

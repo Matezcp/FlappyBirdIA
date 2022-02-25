@@ -62,6 +62,7 @@ def main(genomas, config):
     chao = Chao(730)
     canos = [Cano(700,velocidade_cano)]
     tela = pygame.display.set_mode((TELA_LARGURA,TELA_ALTURA))
+    pygame.display.set_caption("Flappy Bird")
     pontos = 0
     relogio = pygame.time.Clock()
 

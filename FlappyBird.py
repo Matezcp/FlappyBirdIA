@@ -1,6 +1,7 @@
 import pygame
 import os
 import neat
+from math import sqrt
 from passaro import Passaro
 from chao import Chao
 from cano import Cano
@@ -10,6 +11,7 @@ pygame.font.init()
 
 TELA_ALTURA = 800
 TELA_LARGURA = 500
+VELOCIDADE_MAXIMA_CANO = 12
 
 geracao = 0
 ai_jogando = True
@@ -56,8 +58,9 @@ def main(genomas, config):
     else:
         passaros = [Passaro(230, 350)]
     
+    velocidade_cano = 5
     chao = Chao(730)
-    canos = [Cano(700)]
+    canos = [Cano(700,velocidade_cano)]
     tela = pygame.display.set_mode((TELA_LARGURA,TELA_ALTURA))
     pontos = 0
     relogio = pygame.time.Clock()
@@ -90,7 +93,9 @@ def main(genomas, config):
                 #aumentar a fitness dele
                 lista_genomas[i].fitness += 0.1
                 #Roda a rede
-                output = redes[i].activate((passaro.y,abs(passaro.y-canos[indice_cano].altura),abs(passaro.y-canos[indice_cano].pos_base)))
+                dist_cima = sqrt(((passaro.x-canos[indice_cano].x)**2 + (passaro.y-canos[indice_cano].altura)**2))
+                dist_baixo = sqrt(((passaro.x-canos[indice_cano].x)**2 + (passaro.y-canos[indice_cano].pos_base)**2))
+                output = redes[i].activate((passaro.y,dist_cima,dist_baixo))
 
                 if output[0] > 0.5:
                     passaro.pular()
@@ -119,7 +124,12 @@ def main(genomas, config):
         
         if adicionar_cano:
             pontos += 1
-            canos.append(Cano(600))
+            canos.append(Cano(600,velocidade_cano))
+            if pontos % 5 == 0:
+                if velocidade_cano < VELOCIDADE_MAXIMA_CANO:
+                    for cano in canos:
+                        velocidade_cano += 1
+                        cano.increase_velocidade()
             if ai_jogando:
                 #Aumenta o fitness dele
                 for genoma in lista_genomas:

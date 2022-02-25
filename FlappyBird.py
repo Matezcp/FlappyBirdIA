@@ -86,5 +86,6 @@ def main():
 
         desenhar_tela(tela, passaros, canos, chao, pontos)
 
+
 if __name__ == '__main__':
     main()

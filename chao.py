@@ -4,6 +4,7 @@ import os
 IMG_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs','base.png')))
 
 class Chao:
+    
     VELOCIDADE = 5
     LARGURA = IMG_CHAO.get_width()
     IMG = IMG_CHAO

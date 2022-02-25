@@ -23,6 +23,11 @@ class Chao:
         
         if self.x1 + self.LARGURA < 0:
             self.x1 = self.x0 + self.LARGURA
+    
+    #Verifica se o passaro colidiu com o chao ou com o teto
+    def colidir(self, passaro):
+        return (passaro.y + passaro.img.get_height() > self.y or passaro.y < 0)
+
 
     def desenhar(self,tela):
         tela.blit(self.IMG, (self.x0,self.y))

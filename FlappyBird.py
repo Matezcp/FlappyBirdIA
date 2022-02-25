@@ -1,5 +1,6 @@
 import pygame
 import os
+import neat
 from passaro import Passaro
 from chao import Chao
 from cano import Cano
@@ -12,10 +13,10 @@ TELA_LARGURA = 500
 
 IMG_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs','bg.png')))
 
-FONT_PONTOS = pygame.font.SysFont('arial', 50)
+FONT_TEXTOS = pygame.font.SysFont('arial', 40)
 
 #Desenha tudo o que é necessario na tela
-def desenhar_tela(tela,passaros,canos,chao, pontos):
+def desenhar_tela(tela,passaros,canos,chao, pontos, geracao, ai_jogando):
     tela.blit(IMG_FUNDO, (0,0))
 
     for passaro in passaros:
@@ -24,8 +25,12 @@ def desenhar_tela(tela,passaros,canos,chao, pontos):
     for cano in canos:
         cano.desenhar(tela)
 
-    texto = FONT_PONTOS.render(f"Pontuação: {pontos}", 1, (255,255,255))
-    tela.blit(texto, (TELA_LARGURA-10-texto.get_width(), 10))
+    pontuacao = FONT_TEXTOS.render(f"Pontuação: {pontos}", 1, (255,255,255))
+    tela.blit(pontuacao, (TELA_LARGURA-10-pontuacao.get_width(), 10))
+
+    if ai_jogando:
+        geracao = FONT_TEXTOS.render(f"Geração: {geracao}", 1, (255,255,255))
+        tela.blit(geracao, (10, 10))
 
     chao.desenhar(tela)
 
@@ -37,7 +42,9 @@ def main():
     canos = [Cano(700)]
     tela = pygame.display.set_mode((TELA_LARGURA,TELA_ALTURA))
     pontos = 0
+    geracao = 1
     relogio = pygame.time.Clock()
+    ai_jogando = False
 
     while True:
         relogio.tick(30)
@@ -84,7 +91,7 @@ def main():
             if (passaro.y + passaro.img.get_height() > chao.y or passaro.y < 0):
                 passaros.pop(i)
 
-        desenhar_tela(tela, passaros, canos, chao, pontos)
+        desenhar_tela(tela, passaros, canos, chao, pontos, geracao, ai_jogando)
 
 
 if __name__ == '__main__':

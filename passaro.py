@@ -32,11 +32,13 @@ class Passaro:
     def mover(self):
         #Calcula o deslocamento
         self.tempo += 1
-        deslocamento = (1.5 * (self.tempo**2))/2 + self.velocidade * self.tempo
+        deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
 
         #Restringe o deslocamento
         if deslocamento > 16:
             deslocamento = 16
+        elif deslocamento < 0:
+            deslocamento -= 2
         
         #Atualiza a posição y e o angulo do passaro
         self.y += deslocamento

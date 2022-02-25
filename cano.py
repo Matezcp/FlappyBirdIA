@@ -6,9 +6,9 @@ IMG_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs','pipe.
 
 class Cano:
     DISTANCIA = 200
-    VELOCIDADE = 5
 
     def __init__(self, x):
+        self.velocidade = 5
         self.x = x
         self.altura = 0
         self.pos_topo = 0
@@ -24,7 +24,7 @@ class Cano:
         self.pos_base = self.altura + self.DISTANCIA
 
     def mover(self):
-        self.x -= self.VELOCIDADE
+        self.x -= self.velocidade
 
     def desenhar(self,tela):
         tela.blit(self.CANO_TOPO, (self.x,self.pos_topo))

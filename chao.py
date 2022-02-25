@@ -18,10 +18,10 @@ class Chao:
         self.x1 -= self.VELOCIDADE
 
         if self.x0 + self.LARGURA < 0:
-            self.x0 = self.x0 + self.LARGURA
+            self.x0 = self.x1 + self.LARGURA
         
         if self.x1 + self.LARGURA < 0:
-            self.x1 = self.x1 + self.LARGURA
+            self.x1 = self.x0 + self.LARGURA
 
     def desenhar(self,tela):
         tela.blit(self.IMG, (self.x0,self.y))

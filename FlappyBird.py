@@ -1,4 +1,5 @@
 import pygame
+import os
 from passaro import Passaro
 from chao import Chao
 from cano import Cano
@@ -34,7 +35,7 @@ def main():
     passaros = [Passaro(230, 350)]
     chao = Chao(730)
     canos = [Cano(700)]
-    tela = pygame.display.set_mode(TELA_LARGURA,TELA_ALTURA)
+    tela = pygame.display.set_mode((TELA_LARGURA,TELA_ALTURA))
     pontos = 0
     relogio = pygame.time.Clock()
 

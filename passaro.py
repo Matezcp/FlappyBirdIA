@@ -53,9 +53,9 @@ class Passaro:
 
         #Animação do bater de asas (ordem das imagens)
         if self.TEMPO_ANIMACAO <= 15:
-            self.img = self.IMGS[(self.TEMPO_ANIMACAO/5)%3]
+            self.img = self.IMGS[round(self.TEMPO_ANIMACAO/5)%3]
         else:
-            self.img = self.IMGS[(self.TEMPO_ANIMACAO/5)%2]
+            self.img = self.IMGS[round(self.TEMPO_ANIMACAO/5)%2]
 
         #Se tiver caindo não faz animação de bater asas
         if self.angulo <= -80:

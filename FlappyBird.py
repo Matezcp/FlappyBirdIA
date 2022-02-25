@@ -12,7 +12,7 @@ TELA_ALTURA = 800
 TELA_LARGURA = 500
 
 geracao = 0
-ai_jogando = False
+ai_jogando = True
 
 IMG_FUNDO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs','bg.png')))
 
@@ -32,23 +32,21 @@ def desenhar_tela(tela,passaros,canos,chao, pontos):
     tela.blit(pontuacao, (TELA_LARGURA-10-pontuacao.get_width(), 10))
 
     if ai_jogando:
-        geracao = FONT_TEXTOS.render(f"Geração: {geracao}", 1, (255,255,255))
-        tela.blit(geracao, (10, 10))
+        geracao_atual = FONT_TEXTOS.render(f"Geração: {geracao}", 1, (255,255,255))
+        tela.blit(geracao_atual, (10, 10))
 
     chao.desenhar(tela)
 
     pygame.display.update()
 
-#def main(genomas, config):
-def main(): 
+def main(genomas, config):
     global geracao
     geracao += 1
+    redes = []
+    lista_genomas = []
+    passaros = []
 
     if ai_jogando:
-        redes = []
-        lista_genomas = []
-        passaros = []
-
         for _,genoma in genomas:
             redes.append(neat.nn.FeedForwardNetwork.create(genoma, config))
             genoma.fitness = 0
@@ -79,14 +77,24 @@ def main():
 
         indice_cano = 0
         if len(passaros) > 0:
-            pass
+            if len(canos) > 1 and passaros[0].x > (canos[0].x + canos[0].CANO_TOPO.get_width()):
+                indice_cano = 1
         else:
             break
 
 
         #Movimentos
-        for passaro in passaros:
+        for i,passaro in enumerate(passaros):
             passaro.mover()
+            if ai_jogando:
+                #aumentar a fitness dele
+                lista_genomas[i].fitness += 0.1
+                #Roda a rede
+                output = redes[i].activate((passaro.y,abs(passaro.y-canos[indice_cano].altura),abs(passaro.y-canos[indice_cano].pos_base)))
+
+                if output[0] > 0.5:
+                    passaro.pular()
+
         
         chao.mover()
 
@@ -96,6 +104,11 @@ def main():
             for i,passaro in enumerate(passaros):
                 if cano.colidir(passaro) or chao.colidir(passaro):
                     passaros.pop(i)
+                    if ai_jogando:
+                        #Diminui o fitness dele
+                        lista_genomas[i].fitness -= 2
+                        lista_genomas.pop(i)
+                        redes.pop(i)
                 if not cano.passou and passaro.x > cano.x:
                     cano.passou = True
                     adicionar_cano = True
@@ -107,11 +120,31 @@ def main():
         if adicionar_cano:
             pontos += 1
             canos.append(Cano(600))
+            if ai_jogando:
+                #Aumenta o fitness dele
+                for genoma in lista_genomas:
+                    genoma.fitness += 4
         
         for cano in remover_canos:
             canos.remove(cano)
 
         desenhar_tela(tela, passaros, canos, chao, pontos)
 
+def rodar(config_path):
+    config = neat.config.Config(neat.DefaultGenome,
+                                neat.DefaultReproduction,
+                                neat.DefaultSpeciesSet,
+                                neat.DefaultStagnation,
+                                config_path)
+
+    populacao = neat.Population(config)
+    populacao.add_reporter(neat.StdOutReporter(True))
+    populacao.add_reporter(neat.StatisticsReporter())
+
+    if ai_jogando:
+        populacao.run(main, 50)
+    else:
+        main(None,None)
+
 if __name__ == '__main__':
-    main()
+    rodar(os.path.join(os.path.dirname(__file__),'config.txt'))

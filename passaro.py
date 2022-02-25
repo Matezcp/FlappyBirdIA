@@ -53,11 +53,11 @@ class Passaro:
     def desenhar(self,tela):
         self.contagem_imagem += 1
 
-        #Animação do bater de asas (ordem das imagens)
-        if self.TEMPO_ANIMACAO <= 15:
-            self.img = self.IMGS[round(self.TEMPO_ANIMACAO/5)%3]
+        #Animação do     bater de asas (ordem das imagens)
+        if self.contagem_imagem <= self.TEMPO_ANIMACAO*3:
+            self.img = self.IMGS[round(self.contagem_imagem/5)%3]
         else:
-            self.img = self.IMGS[round(self.TEMPO_ANIMACAO/5)%2]
+            self.img = self.IMGS[round(self.contagem_imagem/5)%2]
 
         #Se tiver caindo não faz animação de bater asas
         if self.angulo <= -80:

@@ -43,7 +43,7 @@ class Passaro:
         #Atualiza a posição y e o angulo do passaro
         self.y += deslocamento
 
-        if deslocamento < 0:
+        if deslocamento < 0 or self.y < (self.altura + 25):
             if self.angulo < self.ROTACAO_MAXIMA:
                 self.angulo = self.ROTACAO_MAXIMA
         else:
